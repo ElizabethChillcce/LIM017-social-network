@@ -3,9 +3,9 @@ import { onNavigate } from '../main.js';
 
 export const Home = () => {
   const homePage = `
-    <section class ='homeSection'>
+    <section class ='homeDiv'>
     <h1>Cuy viajero</h1>
-    <img class='img-responsive' src='img/cuyLog.png'>
+    <img class='imgLogo' src='img/cuy.png'>
     <p>Inicia sesión</p>
     </section>
     `;
@@ -14,9 +14,9 @@ export const Home = () => {
 
   const buttonRegister = document.createElement('button');
   const buttonLogin = document.createElement('button');
+
   buttonRegister.id = 'buttonRegister';
   buttonLogin.id = 'buttonLogin';
-  homeDiv.className = 'conatainerHome';
   buttonRegister.textContent = 'Registrate';
   buttonLogin.textContent = 'Usuario y contraseña';
 
@@ -36,17 +36,30 @@ export const Home = () => {
   const image = document.createElement('img');
   const buttonRegister = document.createElement('button');
   const buttonLogin = document.createElement('button');
+  const titleRedSocial = document.createElement('h1');
+  const pText = document.createElement('p');
+
+  titleRedSocial.className = 'titleRedSocial';
+  HomeDiv.className = 'homeDiv';
+  image.className = 'img-responsive';
+  image.src = 'img/cuy.png';
+  pText.id = 'pText';
 
   buttonRegister.id = 'buttonRegister';
   buttonLogin.id = 'buttonLogin';
   buttonRegister.textContent = 'Registrate';
   buttonLogin.textContent = 'Usuario y contraseña';
+  titleRedSocial.innerText = 'Cuy viajero';
+  pText.innerText = 'Inicia sesión';
 
   buttonRegister.addEventListener('click', () => onNavigate('/register'));
   buttonLogin.addEventListener('click', () => onNavigate('/login'));
 
-  homeDiv.appendChild(buttonLogin);
-  homeDiv.appendChild(buttonRegister);
+  HomeDiv.appendChild(titleRedSocial);
+  HomeDiv.appendChild(image);
+  HomeDiv.appendChild(pText);
+  HomeDiv.appendChild(buttonLogin);
+  HomeDiv.appendChild(buttonRegister);
 
   return HomeDiv;
 }; */
