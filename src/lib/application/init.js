@@ -11,6 +11,7 @@ import {
   deleteDoc,
   query,
   orderBy,
+  getDoc,
 } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js';
 import {
   getAuth,
@@ -36,10 +37,12 @@ export {
   signOut,
   updateProfile,
   Timestamp,
+  orderBy,
+  query,
 };
 export const app = initializeApp(firebaseConfig);
 export const getCurrentUser = getAuth().currentUser;
 
 export {
-  getFirestore, collection, addDoc, getDocs, serverTimestamp, onSnapshot, doc, deleteDoc, query, orderBy,
+  getFirestore, collection, addDoc, getDocs, serverTimestamp, onSnapshot, doc, deleteDoc, getDoc,
 };

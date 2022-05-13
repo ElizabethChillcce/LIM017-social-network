@@ -2,7 +2,9 @@
 import { onNavigate } from '../lib/application/controller.js';
 // eslint-disable-next-line import/no-cycle
 import { signOff } from '../lib/application/authFirebase.js';
-import { postCollection, onGetPosts , deletePost } from '../lib/application/dataFirestore.js';
+import {
+  postCollection, onGetPosts, deletePost, getPostPublication,
+} from '../lib/application/dataFirestore.js';
 
 export const Home = () => {
   const homePage = `
@@ -23,12 +25,18 @@ export const Home = () => {
       </section>
         <div id='box-comment'>
           <section class='abc'>
-            <form class='form' target="_blank">
+            <div class="photoProfile">
+            <img id="iconUser"class="iconProfile" >          
+            </div>
+            <form id='form-post-publication' class='form' target="_blank">
+            
               <p>Cuentanos tu experiencia viajando:</p>
               <p><textarea  class="comment-post" id="comment-post" spellcheck="true" placeholder="Escribe aquí ..."></textarea></p>
               <input type="button" id='publish' value="Publicar">
               <input type="reset" id='deleteCamp' value="Borrar todo">
             </form>
+            <section id="showPost">
+            </section>
           </section>
       </div>
       <div id='post-Publish'>
@@ -40,6 +48,7 @@ export const Home = () => {
   viewHomePage.innerHTML = homePage;
 
   const postContainer = viewHomePage.querySelector('#post-Publish'); // espacio para almacenar los post
+
   onGetPosts((querySnapshot) => {
     let html = '';
     querySnapshot.forEach((doc) => {
@@ -54,43 +63,52 @@ export const Home = () => {
             <p>${dataPost.text} </p>
             <div>
             <button data-id="${doc.id}" class='btn-Delete'${dataPost.author === localStorage.getItem('userEmail') ? '' : 'disabled'}>Eliminar</button>
+            <button data-id="${doc.id}" class='btn-edit'${dataPost.author === localStorage.getItem('userEmail') ? '' : 'disabled'}>Editar</button>
             </div>
             </div>
             </div>
             `;
     });
     postContainer.innerHTML = html;
-    const btnDelete = postContainer.querySelectorAll('.btn-Delete');
+/* ---------------------------------BOTON ELIMINAR POST ----------------------------------------- */
+    const btnDelete = postContainer.querySelectorAll('.btn-Delete'); // Lista de botones eliminar
     btnDelete.forEach((btn) => {
       btn.addEventListener('click', async ({ target: { dataset } }) => {
         try {
-        let confirmDelet =  confirm("Estás seguro que quieres borrar?");
-        if (confirmDelet == true) {
-          await deletePost(dataset.id);
-        }
+          const confirmDelet = confirm('Estás seguro que quieres borrar?');
+          if (confirmDelet === true) {
+            await deletePost(dataset.id);
+          }
         } catch (error) {
           console.log(error);
         }
       });
+    });
+/* -----------------------------------------BOTON EDITAR----------------------------------------- */
+    const btnsEdit = postContainer.querySelectorAll('.btn-edit');
+    btnsEdit.forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        const doc = await getPostPublication(e.target.dataset.id);
+        const dataOfPost = doc.data();
+        const postComment = viewHomePage.querySelector('#comment-post');
+        postComment.value = dataOfPost.text;
+        console.log(doc.data());
+        console.log(dataOfPost.text);
+      });
+    });
   });
-});
 
-  // --------------BORRAR POST---------------
-
-  /* const btndeletHtml = html.querySelectorAll('.btnDelete');
-  btndeletHtml.addEventListener('click', () => {
-    console.log('borrando');
-  }); */
   /* ----------EVENTO PUBLICAR EL POST--------- */
-  viewHomePage.querySelector('#publish').addEventListener('click', () => {
+  const savePost = viewHomePage.querySelector('#publish');
+  savePost.addEventListener('click', (e) => {
+    e.preventDefault();
     const postBox = viewHomePage.querySelector('#comment-post').value; // Valor del post
     postCollection(postBox);
-    viewHomePage.querySelector('#comment-post').value= "";
+    viewHomePage.querySelector('#comment-post').value = '';
     console.log(postBox);
-    /* const querySnapshot = await getPost(); */
-
-    /* console.log(querySnapshot); */
+    /* savePost.reset(); */
   });
+
 
   /* --------BOTONES BARRA DE NAVEGACIÓN ---------*/
   viewHomePage.querySelector('#buttonNavStart').addEventListener('click', () => {
